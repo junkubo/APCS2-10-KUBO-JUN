@@ -15,18 +15,31 @@ public class Kernel {
       return color(0, 0, 0);
     }
     else {
-      int new_now = 0;
+      float new_r = 0;
+      float new_g = 0;
+      float new_b = 0;
       
       for (int i = 0; i<3; i++) {
         for (int j = 0; j < 3; j++) {
-           int now = img.get(x + (i-1), y + (j-1));
-           now *= kernel[i][j];
-           print(now);
-           new_now += now;
-           print(new_now);
+           float now_r = red(img.get(x + (i-1), y + (j-1)));
+           float now_g = green(img.get(x + (i-1), y + (j-1)));
+           float now_b = blue(img.get(x + (i-1), y + (j-1)));
+           
+           now_r *= kernel[i][j];
+           now_g *= kernel[i][j];
+           now_b *= kernel[i][j];
+        
+           new_r += now_r;
+           new_g += now_g;
+           new_b += now_b;         
+           
         }
       }
-      return new_now/9;
+      new_r = constrain(new_r, 0, 255);
+      new_g = constrain(new_g, 0, 255);
+      new_b = constrain(new_b, 0, 255);
+           
+      return color(new_r, new_g, new_b);
     }
   }
 
@@ -47,9 +60,9 @@ void setup(){
   size(1450,500);
   PImage car = loadImage("redcar.jpg");
   PImage output = car.copy();
-  Kernel k = new Kernel( new float[][]    { {0.111, 0.111, 0.111},
-     {0.111, 0.111, 0.111},
-   {0.111, 0.111, 0.111} } );
+  Kernel k = new Kernel( new float[][]    { {-1, -1, -1},
+     {-1, 8, -1},
+   {-1, -1, -1} } );
   k.apply(car,output);
   image(car,0,0);
   image(output,car.width,0);
